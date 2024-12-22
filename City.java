@@ -1,11 +1,13 @@
 public class City {
-    private String name;
+   String name;
 
-    public City(String name) {
-        this.name = name;
-    }
+   public City(String name) {
+      this.name = name;
+   }
 
-    public String getName() {
-        return name;
-    }
+   public String getName() {
+      return name;
+   }
 }
+
+
