@@ -1,69 +1,69 @@
 class WayFinder {
-    private CountryMap map;
+   private CountryMap map;
 
-    public WayFinder(CountryMap map) {
-        this.map = map;
-    }
+   public WayFinder(CountryMap map) {
+      this.map = map;
+   }
 
-    public String findFastestWay(String startCity, String endCity) {
-        int startIndex = map.findCityIndex(startCity);
-        int endIndex = map.findCityIndex(endCity);
+   public String findFastestWay(String startCity, String endCity) {
+      int startIndex = this.map.findCityIndex(startCity);
+      int endIndex = this.map.findCityIndex(endCity);
+      if (startIndex != -1 && endIndex != -1) {
+         boolean[] visited = new boolean[this.map.cities.length];
+         int[] distance = new int[this.map.cities.length];
+         int[] previous = new int[this.map.cities.length];
 
-        if (startIndex == -1 || endIndex == -1)
-        {
-            return "Error: One or more cities not found in the map.";
+         int count;
+         for(count = 0; count < distance.length; ++count) {
+            distance[count] = Integer.MAX_VALUE;
+            visited[count] = false;
+            previous[count] = -1;
+         }
 
-        }
+         distance[startIndex] = 0;
 
-        boolean[] visited = new boolean[map.cities.length];
-        int[] distance = new int[map.cities.length];
-        int[] previous = new int[map.cities.length];
-
-        for (int i = 0; i < distance.length; i++)
-        {
-            distance[i] = Integer.MAX_VALUE;
-            visited[i] = false;
-            previous[i] = -1;
-        }
-
-        distance[startIndex] = 0;
-
-        for (int count = 0; count < map.cities.length - 1; count++) {
-            int minIndex = -1;
+         int minIndex;
+         for(count = 0; count < this.map.cities.length - 1; ++count) {
+            minIndex = -1;
             int minDistance = Integer.MAX_VALUE;
 
-            for (int i = 0; i < distance.length; i++) {
-                if (!visited[i] && distance[i] < minDistance) {
-                    minDistance = distance[i];
-                    minIndex = i;
-                }
+            int i;
+            for(i = 0; i < distance.length; ++i) {
+               if (!visited[i] && distance[i] < minDistance) {
+                  minDistance = distance[i];
+                  minIndex = i;
+               }
             }
 
-            if (minIndex == -1) break;
+            if (minIndex == -1) {
+               break;
+            }
 
             visited[minIndex] = true;
 
-            for (int i = 0; i < map.cities.length; i++) {
-                if (!visited[i] && map.routes[minIndex][i] != Integer.MAX_VALUE &&
-                        distance[minIndex] + map.routes[minIndex][i] < distance[i]) {
-                    distance[i] = distance[minIndex] + map.routes[minIndex][i];
-                    previous[i] = minIndex;
-                }
+            for(i = 0; i < this.map.cities.length; ++i) {
+               if (!visited[i] && this.map.routes[minIndex][i] != Integer.MAX_VALUE && distance[minIndex] + this.map.routes[minIndex][i] < distance[i]) {
+                  distance[i] = distance[minIndex] + this.map.routes[minIndex][i];
+                  previous[i] = minIndex;
+               }
             }
-        }
+         }
 
-        if (distance[endIndex] == Integer.MAX_VALUE) {
+         if (distance[endIndex] == Integer.MAX_VALUE) {
             return "No path exists between " + startCity + " and " + endCity + ".";
-        }
+         } else {
+            StringBuilder path = new StringBuilder();
 
-        StringBuilder path = new StringBuilder();
-        int current = endIndex;
+            for(minIndex = endIndex; minIndex != -1; minIndex = previous[minIndex]) {
+               String var10002 = this.map.cities[minIndex].getName();
+               path.insert(0, var10002 + " ");
+            }
 
-        while (current != -1) {
-            path.insert(0, map.cities[current] + " ");
-            current = previous[current];
-        }
-
-        return "Fastest Way: " + path.toString().trim() + "\nTotal Time: " + distance[endIndex] + " min";
-    }
+            String var10000 = path.toString().trim();
+            return "Fastest Way: " + var10000 + "\nTotal Time: " + distance[endIndex] + " min";
+         }
+      } else {
+         return "Error: One or more cities not found in the map.";
+      }
+   }
 }
